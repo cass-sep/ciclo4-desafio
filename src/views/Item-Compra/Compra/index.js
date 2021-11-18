@@ -336,10 +336,6 @@ export const CompraItens = (props) => {
                                 }
                                 {item.ProdutoId !== pId && editAtivado !== true ?
                                     <td className="text-center">
-                                        <Link to={"/lista-itens-produtos/" + item.id}
-                                            className="btn btn-outline-primary btn-sm">
-                                            Itens
-                                        </Link>
                                         <span onClick={() => editOn(item.CompraId, item.ProdutoId)}
                                             className="btn btn-outline-warning btn-sm">
                                             Editar
