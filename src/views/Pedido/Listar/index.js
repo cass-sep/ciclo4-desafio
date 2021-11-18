@@ -2,6 +2,8 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Container, Table, Alert } from "reactstrap"
+import { getCliente } from '../../../Components/get-cliente'
+import profile from '../../../profile.png'
 
 import { api } from '../../../config'
 
@@ -12,6 +14,10 @@ export const ListarPedidos = () => {
         type: '',
         message: ''
     })
+
+    let [infoC, setInfoC] = useState([])
+    let [tOn, setTog] = useState()
+    let [oldId, setOldId] = useState()
 
     const getPedidos = async () => {
         await axios.get(api + '/listapedidos').then(
@@ -28,24 +34,39 @@ export const ListarPedidos = () => {
         })
     }
 
-    const delPedido = async (idPedido) =>{
+
+    const cliAtivo = (id, setInfoC, setStatus) => {
+        getCliente(id, setInfoC, setStatus)
+        if (tOn !== true) {
+            setTog(true)
+            setOldId(id)
+        } else if (id === oldId) {
+            setTog(false)
+        } else {
+            setOldId(id)
+        }
+        console.log('ativo')
+    }
+
+
+    const delPedido = async (idPedido) => {
         console.log(idPedido)
 
         const headers = {
-            'Content-type':'application/json'
+            'Content-type': 'application/json'
         }
 
-        await axios.delete(`${api}/excluir-pedido/${idPedido}`, {headers})
-        .then((response)=>{
-            console.log(response.data.type)
-            console.log(response.data.message)
-            getPedidos()
-        }).catch(()=>{
-            setStatus({
-                type:'error',
-                message:'Erro: Não foi possível conexão com API'
+        await axios.delete(`${api}/excluir-pedido/${idPedido}`, { headers })
+            .then((response) => {
+                console.log(response.data.type)
+                console.log(response.data.message)
+                getPedidos()
+            }).catch(() => {
+                setStatus({
+                    type: 'error',
+                    message: 'Erro: Não foi possível conexão com API'
+                })
             })
-        })
     }
 
     useEffect(() => {
@@ -55,18 +76,37 @@ export const ListarPedidos = () => {
     return (
         <div>
             <Container>
-                <div>
+                <div className="d-grid p-2 c-col">
                     <div>
-                        <h1>Visualizar informações dos pedidos</h1>
-                    </div>
-                    <div className="m-auto p-2">
-                        <Link to="/cadastrar-pedidos"
-                            className="btn btn-outline-primary btn-sm">Cadastrar</Link>
+                        <div>
+                            <h1>Visualizar informações dos pedidos</h1>
+                        </div>
+                        <div className="m-auto p-2">
+                            <Link to="/cadastrar-pedidos"
+                                className="btn btn-outline-primary btn-sm">Cadastrar</Link>
+                        </div>
                     </div>
                     {status.type === 'error' ?
                         <Alert color="danger">
                             {status.message}
                         </Alert> : ""}
+
+                    {tOn === true ?
+                        <div id="profile-c" className="d-flex c-place end">
+                            <table className="m-0 fit">
+                                <tbody id="info" className="d-grid p-2 fit">
+                                    <tr><td>{infoC.nome}</td></tr>
+                                    <tr><td>{infoC.endereco}</td></tr>
+                                    <tr><td>{infoC.cidade}</td></tr>
+                                    <tr><td>{infoC.uf}</td></tr>
+                                    <tr><td>{infoC.nascimento}</td></tr>
+                                </tbody>
+                            </table>
+                            <div className="p-4 pt-2">
+                                <img id="pic" alt='profile' src={profile} />
+                            </div>
+
+                        </div> : <div></div>}
                 </div>
                 <Table striped>
                     <thead>
@@ -81,7 +121,11 @@ export const ListarPedidos = () => {
                         {data.map(item => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
-                                <td>{item.ClienteId}</td>
+                                <td>
+                                    <Link to="#"
+                                        onClick={() => cliAtivo(item.ClienteId, setInfoC, setStatus)}
+                                    >{item.ClienteId}</Link>
+                                </td>
                                 <td>{item.dataPedido}</td>
                                 <td className="text-center">
                                     <Link to={"/editar-pedido/" + item.id}
@@ -93,7 +137,7 @@ export const ListarPedidos = () => {
                                         Itens
                                     </Link>
                                     <span className="btn btn-outline-danger btn-sm"
-                                    onClick={()=>delPedido(item.id)}>Excluir</span>
+                                        onClick={() => delPedido(item.id)}>Excluir</span>
                                 </td>
                             </tr>
                         ))}

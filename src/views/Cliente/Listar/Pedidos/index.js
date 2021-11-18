@@ -18,17 +18,17 @@ export const PedidosCliente = (props) => {
         message: ''
     })
 
-    const getCliente = async() => {
+    const getCliente = async () => {
         await axios.get(`${api}/cliente/${id}`)
-        .then((response) =>{
-            setInfoC(response.data.cliente)
-        })
-        .catch(() =>{
-            setStatus({
-                type: 'error',
-                message: "Erro: sem conexão com a API."
+            .then((response) => {
+                setInfoC(response.data.cliente)
             })
-        })
+            .catch(() => {
+                setStatus({
+                    type: 'error',
+                    message: "Erro: sem conexão com a API."
+                })
+            })
     }
 
     const getPedidos = async () => {
@@ -58,11 +58,11 @@ export const PedidosCliente = (props) => {
                 <div className="d-grid p-2 c-col">
                     <div>
                         <h1>Pedidos do cliente</h1>
-                    <div>
-                        <Link to='/listar-pedidos'
-                            className="btn btn-outline-success btn-sm">
-                            Pedidos</Link>
-                    </div>
+                        <div>
+                            <Link to='/listar-pedidos'
+                                className="btn btn-outline-success btn-sm">
+                                Pedidos</Link>
+                        </div>
                     </div>
 
                     {status.type === 'error' ?
@@ -81,7 +81,7 @@ export const PedidosCliente = (props) => {
                             </tbody>
                         </table>
                         <div className="p-4 pt-2">
-                            <img id="pic" alt='profile' src={profile}/>
+                            <img id="pic" alt='profile' src={profile} />
                         </div>
                     </div>
                 </div>

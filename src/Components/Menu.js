@@ -67,7 +67,7 @@ export const Menu = (props) => {
 								<DropdownToggle nav caret>
 									Itens
 								</DropdownToggle>
-								<DropdownMenu right>
+								<DropdownMenu end>
 									<DropdownItem href="/listar-itens-pedidos/">
 										Itens dos Pedidos
 									</DropdownItem>
