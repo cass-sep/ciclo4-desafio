@@ -1,4 +1,5 @@
 import axios from 'axios'
+import '../../../style.css'
 import { useEffect, useState } from 'react'
 import { Container, Table, Alert, Form, FormGroup, Label, Input, Button } from "reactstrap"
 
@@ -320,7 +321,7 @@ export const ListarItensCompra = () => {
                                 {item.ProdutoId !== pId || item.CompraId !== cId ?
                                     <td>{item.quantidade}</td> : /* console.log(`id produto clicado: ${pId}. id do item da fila: ${item.ProdutoId}`) */
                                     <td>
-                                        <Form className="w-70 p-2">
+                                        <Form >
                                             <Input
                                                 name="quantidade"
                                                 placeholder="Quantidade"
@@ -335,8 +336,8 @@ export const ListarItensCompra = () => {
 
                                 {item.ProdutoId !== pId || item.CompraId !== cId?
                                     <td>{item.valor}</td> : 
-                                    <td>
-                                        <Form className="w-70 p-2">
+                                    <td className="fit">
+                                        <Form>
                                             <Input
                                                 name="valor"
                                                 placeholder="Valor"

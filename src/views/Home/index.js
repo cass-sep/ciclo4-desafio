@@ -1,13 +1,14 @@
 import { Container } from "reactstrap"
+import './style.css'
 
 export const Home = () => {
     return (
         <div>
             <Container>
-                <div className="d-flex">
+                <div className="d-flex justify-content-center">
                     <h1>Home</h1>
                 </div>
-                <div className="p-2">
+                <div className="d-flex gap-3 p-2 justify-content-center">
                     <a href='/listar-clientes' 
                     className="btn btn-outline-success btn-sm">
                         Clientes
@@ -32,7 +33,7 @@ export const Home = () => {
                     className="btn btn-outline-success btn-sm">
                         Produtos
                     </a>
-                    <a href='/listar-itens-compra/' 
+                    <a href='/listar-itens-compras/' 
                     className="btn btn-outline-success btn-sm">
                         Itens Compras
                     </a>

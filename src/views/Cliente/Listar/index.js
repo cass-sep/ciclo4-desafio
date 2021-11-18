@@ -57,7 +57,7 @@ export const ListarClientes = () => {
             <Container>
                 <div>
                     <div>
-                        <h1>Visualizar informações dos serviços</h1>
+                        <h1>Visualizar informações dos clientes</h1>
                     </div>
                     <div className="m-auto p-2">
                         <Link to="/cadastrar-clientes"

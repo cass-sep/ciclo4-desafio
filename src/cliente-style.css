@@ -1,0 +1,21 @@
+.c-col{
+    grid-template-columns: auto auto;
+}
+.c-place{
+    grid-column: 2;
+    grid-row: 1;
+}
+#info tr{
+    font-size: 1em;
+}
+#pic{
+    width: 85px;
+    height: 85px;
+    background-color: white;
+}
+.fit{
+    width: fit-content;
+}
+.end{
+    justify-content: end;
+}

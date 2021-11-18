@@ -1,3 +1,5 @@
+import '../../../cliente-style.css'
+import profile from '../../../profile.png'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -8,11 +10,26 @@ import { api } from '../../../config'
 export const ComprasCliente = (props) => {
 
     const [data, setData] = useState([])
+    const [cInfo, setInfoC] = useState([])
     const [id] = useState(props.match.params.id)
     const [status, setStatus] = useState({
         type: '',
         message: ''
     })
+
+
+    const getCliente = async () => {
+        await axios.get(`${api}/cliente/${id}`)
+            .then((response) => {
+                setInfoC(response.data.cliente)
+            })
+            .catch(() => {
+                setStatus({
+                    type: 'error',
+                    message: "Erro: sem conexão com a API."
+                })
+            })
+    }
 
     const getPedidos = async () => {
         await axios.get(`${api}/compras-cliente/${id}`).then(
@@ -29,6 +46,7 @@ export const ComprasCliente = (props) => {
     }
 
     useEffect(() => {
+        getCliente()
         getPedidos();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id])
@@ -36,20 +54,36 @@ export const ComprasCliente = (props) => {
     return (
         <div>
             <Container>
-                <div>
+                <div className="d-grid p-2 c-col">
                     <div>
                         <h1>Compras do cliente</h1>
-                    </div>
                     <div className="p-2">
-                    <Link to='/listar-compras'
-                        className="btn btn-outline-success btn-sm">
-                        Compras</Link>
+                        <Link to='/listar-compras'
+                            className="btn btn-outline-success btn-sm">
+                            Compras</Link>
                     </div>
-                    
+                    </div>
+
                     {status.type === 'error' ?
                         <Alert color="danger">
                             {status.message}
                         </Alert> : ""}
+
+                    <div id="profile-c" className="d-flex c-place end">
+                        <table className="m-0 fit">
+                            <tbody id="info" className="d-grid p-2 fit">
+                                <tr>{cInfo.nome}</tr>
+                                <tr>{cInfo.endereco}</tr>
+                                <tr>{cInfo.cidade}</tr>
+                                <tr>{cInfo.uf}</tr>
+                                <tr>{cInfo.nascimento}</tr>
+                            </tbody>
+                        </table>
+                        <div className="p-4 pt-2">
+                            <img id="pic" alt='profile' src={profile} />
+                        </div>
+                    </div>
+
                 </div>
                 <Table striped>
                     <thead>
@@ -67,7 +101,7 @@ export const ComprasCliente = (props) => {
                                 <td>{item.ClienteId}</td>
                                 <td>{item.data}</td>
                                 <td className="text-center">
-                                    <Link to={'/editar-compra/'+item.id}
+                                    <Link to={'/editar-compra/' + item.id}
                                         className="btn btn-outline-warning btn-sm">
                                         Editar
                                     </Link>

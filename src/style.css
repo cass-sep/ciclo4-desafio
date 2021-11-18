@@ -1,0 +1,14 @@
+.text-center a, span {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+.fit{
+    padding: 0;
+}
+/* td form .form-control{
+    padding: 0;
+    width: 50%;
+} */
+.form-control{
+    width: fit-content;
+}
