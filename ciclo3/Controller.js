@@ -220,6 +220,7 @@ let nProduto
         .then(function(cliente){
             return res.json({
                 error:false,
+                message:'success',
                 cliente
             })
         }).catch(erro=>{

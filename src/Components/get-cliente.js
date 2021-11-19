@@ -5,6 +5,10 @@ export const getCliente = async (id, data, status) => {
     await axios.get(`${api}/cliente/${id}`)
         .then((response) => {
             data(response.data.cliente)
+            status({
+                type: 'encontrado',
+                message: 'Cliente encontrado.'
+            })
         }).catch(() => {
             status({
                 type: 'error',
@@ -70,3 +74,16 @@ export const getCliente = async (id, data, status) => {
     onClick={() => cliAtivo(item.ClienteId, setInfoC, setStatus)}>
     {item.ClienteId}
 </Link> */
+
+
+export const dropClientes = async (data, status) => {
+    await axios.get(`${api}/listaclientes/`)
+        .then((response) => {
+            data(response.data)
+        }).catch(() => {
+            status({
+                type: 'error',
+                message: 'Não foi possível encontrar o cliente.'
+            })
+        })
+}

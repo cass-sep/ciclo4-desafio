@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Container, Table, Alert, Form, FormGroup, Label, Input, Button } from "reactstrap"
-import { getCliente } from '../../../Components/get-cliente'
+import { Container, Table, Alert, Form, FormGroup, Label, Input, Button, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap"
+import { dropClientes, getCliente } from '../../../Components/get-cliente'
 import profile from '../../../profile.png'
 import '../../../cliente-style.css'
 
@@ -14,6 +14,7 @@ export const ListarCompras = () => {
     let [cadAtivado, setCadAtivado] = useState()
     let [editAtivado, setEditAtivado] = useState()
     let [idEdit, setIdEdit] = useState()
+    let empty
 
     const [infoC, setInfoC] = useState([])
 
@@ -22,6 +23,8 @@ export const ListarCompras = () => {
 
     // variavel pra saber qual botao foi apertado
     let [oldId, setOldId] = useState()
+
+    const [listaClientes, setListaClientes] = useState([])
 
     const [data, setData] = useState([])
     const [status, setStatus] = useState({
@@ -53,18 +56,20 @@ export const ListarCompras = () => {
 
     // função que ativa e desativa informações
     const cliAtivo = (id, setInfoC, setStatus) => {
-        getCliente(id, setInfoC, setStatus)
         if (tOn !== true) {
+            setInfoC([''])
+            getCliente(id, setInfoC, setStatus)
             setTog(true)
             setOldId(id)
         } else if (id === oldId) {
             setTog(false)
         } else {
             setOldId(id)
+            getCliente(id, setInfoC, setStatus)
         }
     }
-
-
+    
+    
 
     const getCompras = async () => {
         await axios.get(api + '/listacompras').then(
@@ -114,7 +119,7 @@ export const ListarCompras = () => {
                     // console.log(response.data.message)
                     setStatus({
                         type: 'error',
-                        message: "Cliente excluído com sucesso."
+                        message: "Compra excluída com sucesso."
                     })
                     getCompras()
                     setAlo(true)
@@ -129,6 +134,7 @@ export const ListarCompras = () => {
 
     const cadCompra = async e => {
         e.preventDefault()
+        console.log(compra.ClienteId)
 
         const headers = {
             'Content-Type': 'application/json'
@@ -156,6 +162,7 @@ export const ListarCompras = () => {
         console.log(status.type)
         getCompras()
         cadOn(true)
+        setTog(false)
         setCompra({
             id: '',
             ClienteId: '',
@@ -166,6 +173,7 @@ export const ListarCompras = () => {
     editAtivado = false
 
     const editOn = (editId) => {
+        setDaco(empty)
         getDaco(editId)
         // getDataCompra(editId)
         setEditAtivado(editAtivado = true)
@@ -198,6 +206,8 @@ export const ListarCompras = () => {
         e.preventDefault()
         setEditAtivado(false)
         setIdEdit(0)
+        setDaco(empty)
+
 
         const headers = {
             'Content-Type': "application/json"
@@ -221,6 +231,7 @@ export const ListarCompras = () => {
     const alerta = () => {
         let alerto = false
         cadOn(alerto)
+        dropClientes(setListaClientes, setStatus)
     }
 
     useEffect(() => {
@@ -248,13 +259,21 @@ export const ListarCompras = () => {
                                             <Label>
                                                 Id do Cliente
                                             </Label>
-                                            <Input
-                                                name="ClienteId"
-                                                placeholder="Id do cliente"
-                                                type="text"
-                                                onChange={valorInput}
-                                                required
-                                            />
+                                            <UncontrolledDropdown >
+                                                {!compra.ClienteId ?
+                                                <DropdownToggle caret className="bg-primary border-0">
+                                                     Clientes
+                                                </DropdownToggle>: <DropdownToggle className="px-4 mx-2 bg-primary border-0" caret>
+                                                     {compra.ClienteId}
+                                                </DropdownToggle>}
+                                                <DropdownMenu>
+                                                    {listaClientes.map(item => (
+                                                        <DropdownItem key={item.id} onClick={e => setCompra({
+                                                            ...compra, 'ClienteId': e.target.value
+                                                        })} value={item.id}>{item.id}</DropdownItem>
+                                                    ))}
+                                                </DropdownMenu>
+                                            </UncontrolledDropdown>
                                         </FormGroup>
                                         <FormGroup className="w-70 p-2">
                                             <Label>
@@ -273,7 +292,9 @@ export const ListarCompras = () => {
                                         <Button type="submit" outline color="primary">
                                             Cadastrar
                                         </Button>
-                                        <Button type="reset" outline color="primary">
+                                        <Button type="reset" outline color="primary" onClick={e => setCompra({
+                                            ...compra, 'ClienteId': undefined
+                                        })}>
                                             Limpar
                                         </Button>
                                     </FormGroup>
@@ -291,7 +312,7 @@ export const ListarCompras = () => {
                             </Alert> : ''}
                     </div>
 
-                    {cadAtivado !== true && tOn === true ?
+                    {cadAtivado !== true && tOn === true?
                         <div id="profile-c" className="d-flex c-place end">
                             <table className="m-0 fit">
                                 <tbody id="info" className="d-grid p-2 fit">
@@ -303,7 +324,7 @@ export const ListarCompras = () => {
                                 </tbody>
                             </table>
                             <div className="p-4 pt-2">
-                                <img id="pic" alt='profile' src={profile} />
+                                {infoC === empty ? '':<img id="pic" alt='' src={profile} />}
                             </div>
 
                         </div> : <div></div>}
@@ -334,7 +355,7 @@ export const ListarCompras = () => {
                                         <Form>
                                             <Input
                                                 name="data"
-                                                placeholder="Data da compra"
+                                                placeholder=""
                                                 type="text"
                                                 value={daCo}
                                                 onChange={e => setDaco(e.target.value)}
@@ -372,6 +393,7 @@ export const ListarCompras = () => {
 
                     </tbody>
                 </Table>
+
             </Container>
         </div>
     )
